@@ -29,12 +29,20 @@ const Welcome = () => {
       <p className="text-lg text-gray-300 mb-8">
         Your journey to investment readiness starts here.
       </p>
-      <button
-        onClick={handleStart}
-        className="bg-blue-600 hover:bg-blue-700 text-amber-300 font-semibold py-3 px-6 rounded-2xl shadow-lg transition"
-      >
-        Get Started
-      </button>
+      <div className="space-y-4">
+        <button
+          onClick={handleStart}
+          className="bg-blue-600 hover:bg-blue-700 text-amber-300 font-semibold py-3 px-6 rounded-2xl shadow-lg transition block mx-auto"
+        >
+          Get Started
+        </button>
+        <button
+          onClick={() => navigate('/settings')}
+          className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition block mx-auto"
+        >
+          System Settings
+        </button>
+      </div>
     </div>
   </div>
 );
