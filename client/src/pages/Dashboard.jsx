@@ -1,5 +1,5 @@
 // src/pages/Dashboard.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -14,23 +14,58 @@ ChartJS.register(BarElement, CategoryScale, LinearScale);
 const Dashboard = () => {
   const navigate = useNavigate();
 
+  // ✅ Restrict access to logged-in users only
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const [licenseUploaded, setLicenseUploaded] = useState(false);
   const [financialsUploaded, setFinancialsUploaded] = useState(false);
   const [income, setIncome] = useState('');
   const [expenses, setExpenses] = useState('');
   const [debt, setDebt] = useState('');
   const [score, setScore] = useState(null);
-
-  
   const [type, setType] = useState('product');
   const [sector, setSector] = useState('fashion');
   const [years, setYears] = useState('');
 
-  const handleFileUpload = (type) => {
-    if (type === 'license') setLicenseUploaded(true);
-    if (type === 'financials') setFinancialsUploaded(true);
-  };
+  // ✅ File upload handler (handles both license and financials)
+  const handleFileUpload = async (type, file) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user?.id;
 
+    if (!userId) {
+      alert("User not logged in.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("userId", userId);
+
+    try {
+      const res = await fetch('http://localhost:5000/upload', {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        if (type === "license") setLicenseUploaded(true);
+        if (type === "financials") setFinancialsUploaded(true);
+        console.log("Upload successful:", data.fileUrl);
+      } else {
+        alert(data.error || "Upload failed.");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Something went wrong during file upload.");
+    }
+  };
 
   const calculateScore = () => {
     const i = parseFloat(income);
@@ -63,11 +98,7 @@ const Dashboard = () => {
     datasets: [
       {
         label: 'KSh',
-        data: [
-          parseFloat(income) || 0,
-          parseFloat(expenses) || 0,
-          parseFloat(debt) || 0
-        ],
+        data: [parseFloat(income) || 0, parseFloat(expenses) || 0, parseFloat(debt) || 0],
         backgroundColor: ['#2563EB', '#F59E0B', '#DC2626'],
       },
     ],
@@ -94,20 +125,14 @@ const Dashboard = () => {
         <div className="bg-white p-4 rounded-xl shadow-sm">
           <h3 className="font-semibold text-gray-700 mb-2">Progress Tracker</h3>
           <div className="flex flex-col md:flex-row gap-2 text-sm">
-            <div className="flex items-center gap-2">
-              <span className="text-green-600">✔</span> Signup
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-green-600">✔</span> Profile Info
-            </div>
+            <div className="flex items-center gap-2"><span className="text-green-600">✔</span> Signup</div>
+            <div className="flex items-center gap-2"><span className="text-green-600">✔</span> Profile Info</div>
             <div className="flex items-center gap-2">
               <span className={canApply ? 'text-green-600' : 'text-yellow-500'}>
                 {canApply ? '✔' : '⏳'}
               </span> Upload Documents
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-400">•</span> Await Review
-            </div>
+            <div className="flex items-center gap-2"><span className="text-gray-400">•</span> Await Review</div>
           </div>
         </div>
 
@@ -117,39 +142,38 @@ const Dashboard = () => {
           {/* LEFT SIDE */}
           <div className="space-y-6">
 
-           {/* Upload Section */}
-<div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
-  <h3 className="font-semibold text-gray-800">Upload Required Documents</h3>
-  
-  <div>
-    <label className="block text-sm mb-1">Business License (PDF/Image)</label>
-    <input
-      type="file"
-      onChange={(e) => {
-        if (e.target.files.length > 0) {
-          handleFileUpload('license');
-        }
-      }}
-      className="w-full border p-2 rounded"
-    />
-    {licenseUploaded && <p className="text-green-600 text-sm mt-1">✓ License uploaded</p>}
-  </div>
+            {/* Upload Section */}
+            <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
+              <h3 className="font-semibold text-gray-800">Upload Required Documents</h3>
 
-  <div>
-    <label className="block text-sm mb-1">Financial Proof (e.g., Bank Statement)</label>
-    <input
-      type="file"
-      onChange={(e) => {
-        if (e.target.files.length > 0) {
-          handleFileUpload('financials');
-        }
-      }}
-      className="w-full border p-2 rounded"
-    />
-    {financialsUploaded && <p className="text-green-600 text-sm mt-1">✓ Financials uploaded</p>}
-  </div>
-</div>
+              <div>
+                <label className="block text-sm mb-1">Business License (PDF/Image)</label>
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    if (e.target.files.length > 0) {
+                      handleFileUpload('license', e.target.files[0]);
+                    }
+                  }}
+                  className="w-full border p-2 rounded"
+                />
+                {licenseUploaded && <p className="text-green-600 text-sm mt-1">✓ License uploaded</p>}
+              </div>
 
+              <div>
+                <label className="block text-sm mb-1">Financial Proof (e.g., Bank Statement)</label>
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    if (e.target.files.length > 0) {
+                      handleFileUpload('financials', e.target.files[0]);
+                    }
+                  }}
+                  className="w-full border p-2 rounded"
+                />
+                {financialsUploaded && <p className="text-green-600 text-sm mt-1">✓ Financials uploaded</p>}
+              </div>
+            </div>
 
             {/* Financial Input Section */}
             <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
@@ -176,34 +200,33 @@ const Dashboard = () => {
                 onChange={(e) => setDebt(e.target.value)}
               />
               <select
-          className="w-full border p-2 rounded"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="product">Product</option>
-          <option value="service">Service</option>
-          <option value="both">Both</option>
-        </select>
-        <select
-          className="w-full border p-2 rounded"
-          value={sector}
-          onChange={(e) => setSector(e.target.value)}
-        >
-          <option value="fashion">Fashion</option>
-          <option value="music">Music</option>
-          <option value="film">Film</option>
-          <option value="crafts">Crafts</option>
-          <option value="digital">Digital Content</option>
-        </select>
-        <input
-          type="number"
-          placeholder="Years in Business"
-          className="w-full border p-2 rounded"
-          value={years}
-          onChange={(e) => setYears(e.target.value)}
-          required
-        />
-    
+                className="w-full border p-2 rounded"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                <option value="product">Product</option>
+                <option value="service">Service</option>
+                <option value="both">Both</option>
+              </select>
+              <select
+                className="w-full border p-2 rounded"
+                value={sector}
+                onChange={(e) => setSector(e.target.value)}
+              >
+                <option value="fashion">Fashion</option>
+                <option value="music">Music</option>
+                <option value="film">Film</option>
+                <option value="crafts">Crafts</option>
+                <option value="digital">Digital Content</option>
+              </select>
+              <input
+                type="number"
+                placeholder="Years in Business"
+                className="w-full border p-2 rounded"
+                value={years}
+                onChange={(e) => setYears(e.target.value)}
+                required
+              />
               <button onClick={calculateScore} className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
                 Calculate Readiness Score
               </button>

@@ -23,16 +23,46 @@ const Form = () => {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === 'file' ? files[0] : value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // ✅ Optional: send to backend later
-    navigate('/confirmation'); // ✅ Go to confirmation screen
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user?.id) {
+      alert("Please log in to submit the form.");
+      return;
+    }
+
+    const data = new FormData();
+    for (const key in formData) {
+      data.append(key, formData[key]);
+    }
+    data.append('userId', user.id); // ✅ Include user ID from session
+
+    try {
+      const res = await fetch('http://localhost:5000/api/form', {
+        method: 'POST',
+        body: data,
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert(`Thank you, ${formData.name}! Your application is pending review.`);
+        localStorage.setItem('submittedName', formData.name);
+        navigate('/confirmation');
+      } else {
+        alert(result.error || 'Submission failed.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Something went wrong. Please try again.');
+    }
   };
 
   return (
@@ -41,7 +71,7 @@ const Form = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Tell us about you or your startup
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
           <input
             type="text"
             name="name"
@@ -52,12 +82,7 @@ const Form = () => {
           />
 
           <div className="flex flex-col md:flex-row gap-4">
-            <select
-              name="gender"
-              onChange={handleChange}
-              required
-              className="w-full border rounded p-3"
-            >
+            <select name="gender" onChange={handleChange} required className="w-full border rounded p-3">
               <option value="">Select Gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -65,24 +90,14 @@ const Form = () => {
               <option value="prefer_not">Prefer not to say</option>
             </select>
 
-            <select
-              name="disability"
-              onChange={handleChange}
-              required
-              className="w-full border rounded p-3"
-            >
+            <select name="disability" onChange={handleChange} required className="w-full border rounded p-3">
               <option value="">Person with Disability?</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
           </div>
 
-          <select
-            name="userType"
-            onChange={handleChange}
-            required
-            className="w-full border rounded p-3"
-          >
+          <select name="userType" onChange={handleChange} required className="w-full border rounded p-3">
             <option value="">Are you an Individual or Company?</option>
             <option value="individual">Individual</option>
             <option value="company">Company</option>
@@ -124,12 +139,7 @@ const Form = () => {
             />
           </div>
 
-          <select
-            name="sector"
-            onChange={handleChange}
-            required
-            className="w-full border rounded p-3"
-          >
+          <select name="sector" onChange={handleChange} required className="w-full border rounded p-3">
             <option value="">Select your Sector</option>
             <option value="fashion">Fashion</option>
             <option value="music">Music</option>
@@ -178,7 +188,7 @@ const Form = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-700 text-blue-600 font-semibold py-3 px-6 rounded-xl hover:bg-blue-800 transition"
+            className="w-full bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-800 transition"
           >
             Continue
           </button>

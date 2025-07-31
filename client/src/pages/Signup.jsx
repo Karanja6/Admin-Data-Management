@@ -15,10 +15,32 @@ const Signup = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add validation here if needed
-    navigate('/form'); // or the next page you want
+
+    if (form.password !== form.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:5000/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message);
+        navigate('/form'); // go to next page
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert('Something went wrong.');
+    }
   };
 
   const continueAsGuest = () => {
