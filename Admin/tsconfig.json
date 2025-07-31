@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "ESNext"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "./Admin",                            // 👈 baseUrl changed
+    "paths": {
+      "@/*": ["components/*"]                        // 👈 matches Admin/components/*
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules"]
+}
