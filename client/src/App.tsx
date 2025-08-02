@@ -70,10 +70,12 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // ✅ Restore user on page load
+  // ✅ Restore user on page load unless logout flag is set
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const isLoggedOut = localStorage.getItem('loggedOut');
+
+    if (storedUser && !isLoggedOut) {
       const parsedUser: User = JSON.parse(storedUser);
       setUser(parsedUser);
       setIsAuthenticated(true);
@@ -139,20 +141,20 @@ export default function App() {
 
     setUser(enhancedUser);
     setIsAuthenticated(true);
-
-    // ✅ Save user to localStorage
     localStorage.setItem('user', JSON.stringify(enhancedUser));
+    localStorage.removeItem('loggedOut'); // ✅ Clear logout flag
   };
 
   const handleUserUpdate = (updatedUser: User) => {
     setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser)); // Keep storage updated
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const handleLogout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user'); // ✅ Clear storage on logout
+    localStorage.removeItem('user');
+    localStorage.setItem('loggedOut', 'true'); // ✅ Set logout flag
   };
 
   if (!isAuthenticated || !user) {
