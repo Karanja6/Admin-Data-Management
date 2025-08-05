@@ -170,7 +170,7 @@ export function AuthScreen({ onLogin, isAnalyticalPlatform = false }: AuthScreen
         {/* Header */}
         <div className="text-center space-y-3">
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto">
-            <span className="text-primary-foreground font-bold text-xl">H</span>
+            <span className="text-teal-400-foreground text-white font-bold text-xl">H</span>
           </div>
           <h1 className="text-2xl font-semibold">HEVA CreativeHub</h1>
           <p className="text-muted-foreground">
@@ -274,7 +274,7 @@ export function AuthScreen({ onLogin, isAnalyticalPlatform = false }: AuthScreen
 
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full bg-teal-400"
                     disabled={isLoading || !emailValidation?.isValid}
                   >
                     {isLoading ? 'Signing In...' : 'Sign In'}

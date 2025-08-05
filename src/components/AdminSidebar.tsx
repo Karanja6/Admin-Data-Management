@@ -134,7 +134,7 @@ export function AdminSidebar({
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-semibold text-sm">H</span>
+            <span className="text-teal-400-foreground text-white font-semibold text-sm">H</span>
           </div>
           <div>
             <h2 className="font-semibold text-sidebar-foreground">HEVA CreativeHub</h2>
@@ -170,7 +170,7 @@ export function AdminSidebar({
               variant={isActive ? "default" : "ghost"}
               className={`w-full justify-start h-auto p-3 ${
                 isActive 
-                  ? 'bg-sidebar-primary text-sidebar-primary-foreground' 
+                  ? 'bg-sidebar-primary text-sidebar-teal-400-foreground' 
                   : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
               }`}
               onClick={() => onViewChange(item.id)}
@@ -187,7 +187,7 @@ export function AdminSidebar({
                   <Badge 
                     variant={
                       item.id === 'repayments' || item.id === 'blacklist' ? 'destructive' : 
-                      item.badge === 'NEW' ? 'default' : 'secondary'
+                      item.badge === 'NEW' ? 'default' : 'red-500'
                     } 
                     className="ml-2 text-xs"
                   >
@@ -207,7 +207,7 @@ export function AdminSidebar({
           className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           onClick={onLogout}
         >
-          <LogOut className="w-4 h-4 mr-2" />
+          <LogOut className="w-4 text-red-500 h-4 mr-2" />
           Sign Out
         </Button>
       </div>
