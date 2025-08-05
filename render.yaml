@@ -2,7 +2,7 @@ services:
   - type: web
     name: heva-creativehub
     env: static
-    buildCommand: npm install && npm run render-build
+    buildCommand: npm run render-build
     staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
@@ -10,4 +10,4 @@ services:
     routes:
       - type: rewrite
         source: /(.*)
-        destination: /index.html 
+        destination: /index.html

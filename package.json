@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "render-build": "npx vite build",
-    "preview": "vite preview",
-    "start": "vite preview --port 3000 --host"
-  },
+ "scripts": {
+  "dev": "vite",
+  "build": "npx vite build",  
+  "render-build": "./render-build.sh",
+  "preview": "vite preview",
+  "start": "vite preview --port 3000 --host"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
