@@ -4,11 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "postinstall": "chmod +x ./node_modules/.bin/vite",
-    "build": "npx vite build",
-    "dev": "vite",
-    "preview": "vite preview"
-  },
+  "build": "npx vite build",
+  "dev": "vite",
+  "preview": "vite preview"
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",
