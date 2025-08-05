@@ -5,6 +5,7 @@
 1. **Favicon 404 Error**: Added favicon.ico and proper HTML meta tags
 2. **React DevTools Warning**: This is just a development suggestion, not an error
 3. **Deployment Configuration**: Added proper build settings and deployment configs
+4. **Permission Issues**: Simplified build process to avoid permission denied errors
 
 ## Local Development
 
@@ -15,17 +16,13 @@ npm run dev
 ## Deployment to Vercel
 
 1. **Connect your repository to Vercel**
-2. **Environment Variables** (if using Supabase):
-   - `VITE_SUPABASE_URL`: Your Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
-
-3. **Build Settings**:
+2. **Build Settings**:
    - Framework Preset: Vite
    - Build Command: `npm run build`
    - Output Directory: `dist`
    - Install Command: `npm install`
 
-4. **Deploy**: Vercel will automatically detect the configuration from `vercel.json`
+3. **Deploy**: Vercel will automatically detect the configuration from `vercel.json`
 
 ## Deployment to Render
 
@@ -36,13 +33,15 @@ npm run dev
    - Publish Directory: `dist`
    - Environment: Static
 
-4. **Environment Variables** (if using Supabase):
+4. **Environment Variables** (Optional - only if using Supabase):
    - `VITE_SUPABASE_URL`: Your Supabase project URL
    - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
 
 5. **Deploy**: Render will use the configuration from `render.yaml`
 
-## Environment Variables
+## Environment Variables (Optional)
+
+The app works without environment variables - it will use demo data. If you want to connect to Supabase:
 
 Create a `.env` file in your project root:
 
@@ -67,8 +66,8 @@ VITE_DEV_MODE=false
 
 1. **Build Fails**: Ensure all dependencies are installed
 2. **404 Errors**: Check that the SPA routing is configured correctly
-3. **Environment Variables**: Make sure they're set in your deployment platform
-4. **CORS Issues**: Configure your Supabase project settings
+3. **Permission Denied**: The build process has been simplified to avoid this issue
+4. **Environment Variables**: Not required for basic deployment - app works with demo data
 
 ### For Vercel:
 - Check the deployment logs in the Vercel dashboard
@@ -81,6 +80,6 @@ VITE_DEV_MODE=false
 ## Development vs Production
 
 - **Development**: Uses demo data and shows development mode indicators
-- **Production**: Uses real Supabase connection (requires environment variables)
+- **Production**: Uses demo data by default, or real Supabase connection (if environment variables are set)
 
 The app will automatically detect the environment and adjust accordingly. 

@@ -2,13 +2,11 @@ services:
   - type: web
     name: heva-creativehub
     env: static
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: npm run build
     staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
-        value: 18.0.0
-      - key: NPM_CONFIG_PREFIX
-        value: /opt/render/project/.npm-global
+        value: 20.0.0
     routes:
       - type: rewrite
         source: /(.*)

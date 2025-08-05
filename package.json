@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx vite build",
+    "build": "vite build",
     "preview": "vite preview",
-    "vercel-build": "npx vite build",
-    "start": "vite preview --port 3000 --host",
-    "postinstall": "npx vite build"
+    "vercel-build": "vite build",
+    "start": "vite preview --port 3000 --host"
   },
   "keywords": [],
   "author": "",
